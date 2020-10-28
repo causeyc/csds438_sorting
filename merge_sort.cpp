@@ -6,6 +6,7 @@ Author: Colin Causey
 
 // Note that merge and mergeSort are taken from the Walls and Mirrors book.
 
+#include <omp.h>
 #include <iostream>
 #include <fstream>
 #include <string>
