@@ -1,0 +1,27 @@
+# Elements: 40000000
+--
+Number of OpenMP threads: 1
+
+real	0m11.748s
+user	0m11.706s
+sys	0m0.041s
+Number of OpenMP threads: 2
+
+real	0m6.304s
+user	0m11.800s
+sys	0m0.060s
+Number of OpenMP threads: 4
+
+real	0m3.723s
+user	0m12.145s
+sys	0m0.056s
+Number of OpenMP threads: 8
+
+real	0m2.872s
+user	0m15.650s
+sys	0m0.073s
+Number of OpenMP threads: 16
+
+real	0m3.161s
+user	0m33.841s
+sys	0m0.099s
