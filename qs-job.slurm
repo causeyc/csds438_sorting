@@ -7,6 +7,8 @@
 #SBATCH --mem=16gb
 #SBATCH -p classc -A sxg125_csds438
 
+gcc -fopenmp quicksortOMP.c -o quicksortOMP
+
 echo "# Elements: 40000000"
 echo "--"
 
