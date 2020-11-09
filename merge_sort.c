@@ -14,13 +14,13 @@ Author: Colin Causey
 #include <stdbool.h> 
 #include <omp.h>
 
-//const int ARR_SIZE = 100000;
 //const int ARR_SIZE = 1000000;
+const int ARR_SIZE = 10000000;
 //const int ARR_SIZE = 10000000;
-const int ARR_SIZE = 40000000;
+//const int ARR_SIZE = 40000000;
 //const int ARR_SIZE = 100000000;
 
-void merge(int theArray[], int first, int mid, int last, int tempArray[])
+void merge(int* theArray, int first, int mid, int last, int* tempArray)
 {
   //int tempArray[ARR_SIZE]; // allocate on stack to avoid expensive free operation for each tempArray generated
   //int* tempArray;
@@ -65,12 +65,13 @@ void merge(int theArray[], int first, int mid, int last, int tempArray[])
 
   //free(tempArray);
 }
-void mergeSort(int theArray[], int first, int last, int tempArray[])
+void mergeSort(int* theArray, int first, int last, int* tempArray)
 {
   if(first < last)
     {
       int mid = first + (last - first) / 2;
       //#pragma omp task default(none) firstprivate(theArray, first, mid, last)
+      ///*
       #pragma omp parallel sections
       {
         #pragma omp section
@@ -82,7 +83,10 @@ void mergeSort(int theArray[], int first, int last, int tempArray[])
           mergeSort(theArray, mid + 1, last, tempArray);
         }
       }
+      //*/
       //#pragma omp barrier
+      //mergeSort(theArray, first, mid, tempArray);
+      //mergeSort(theArray, mid + 1, last, tempArray);
       merge(theArray, first, mid, last, tempArray);
     }
 }
@@ -132,7 +136,7 @@ int main()
   // https://stackoverflow.com/questions/2279052/increase-stack-size-in-linux-with-setrlimit
   // 64L * 1024L * 1024L --> min stack size = 64 Mb
   
-  ///*
+  /*
   const rlim_t kStackSize = (64L * 1024L * 1024L) * 128;
   struct rlimit rl;
   int result;
@@ -149,7 +153,7 @@ int main()
             }
         }
     }
-  //*/
+  */
 
   int first = 0;
   int last = ARR_SIZE - 1;
@@ -174,6 +178,10 @@ int main()
   */
   int* tempArray;
   tempArray = (int *)malloc(sizeof(int)*ARR_SIZE);
+  //omp_set_num_threads(omp_num_procs());
+  //omp_set_dynamic(false);
+  //omp_num_procs();
+  //printf("Number of processors: %d", omp_num_procs());
   mergeSort(theArray, first, last, tempArray);
 
   //std::cout << "Sorted Array:" << std::endl;
