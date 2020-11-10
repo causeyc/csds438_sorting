@@ -95,9 +95,9 @@ void P_MERGE_SORT(int A[], int p, int r, int B[], int s)
     }
   else
     {
-      //int* T;
-      //T = (int *)malloc(sizeof(int)*n);
-      int T[n];
+      int* T;
+      T = (int *)malloc(sizeof(int)*n);
+      //int T[n];
       int q = (p + r) / 2;
       int q_ = q - p + 1;
       //spawn
@@ -212,6 +212,7 @@ int main()
   int r = ARR_SIZE - 1;
   int s = 0; // number of threads - 1???
   B = (int *)malloc(sizeof(int)*ARR_SIZE);
+  omp_set_nested(true); // enable nested parallelism
   P_MERGE_SORT(A, p, r, B, s);
 
   //std::cout << "Sorted Array:" << std::endl;
