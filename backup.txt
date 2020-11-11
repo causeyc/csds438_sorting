@@ -1,0 +1,192 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdint.h>
+
+
+void arrayPrint(int *array, int print_length) {
+    int i;
+    for (i = 0; i < print_length; i++) {
+        if (i == print_length-1){
+                printf("%d)\n", array[i]);
+        }
+        else if(i == 0){
+                printf("(%d, ", array[i]);
+        }
+        else {
+                printf("%d, ", array[i]);
+        }
+    }
+    printf("\n");
+}
+
+
+void swap(int *array, int i, int j) { 
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+}
+
+//gapped insertion sort
+void insertionSort(int *array, int array_length, int gap_size) {
+	int current_position;
+	for(current_position = gap_size; current_position < array_length; current_position += gap_size){
+		int last_positions;
+		last_positions = current_position - gap_size;
+		for( ; (last_positions > -1) && (array[last_positions + gap_size] <= array[last_positions]);  ){
+			swap(array, last_positions + gap_size, last_positions);
+			last_positions = last_positions - gap_size;			
+		}
+	}
+}
+
+void positionalInsertionSort(int *array, int array_length, int gap_size, int offset_position) {
+        int current_position;
+        for(current_position = gap_size + offset_position; current_position < array_length + offset_position; current_position += gap_size){
+                int last_positions;
+                last_positions = current_position - gap_size;
+                for( ; (last_positions > offset_position-1) && (array[last_positions + gap_size] <= array[last_positions]);  ){
+                        swap(array, last_positions + gap_size, last_positions);
+                        last_positions = last_positions - gap_size;
+                }
+        }
+	//arrayPrint(array, array_length);
+}
+
+//works only for even rn.
+void parallelShellSort(int *array, int array_length, int num_cpus){
+	if(num_cpus == 0)
+		return;
+	//int even;
+	int block_size;
+	//even = 0;
+	//if(array_length % 2 == 0)
+	//	even = 1;
+	//if(even)
+	int block_num;
+	int gap_size;
+	int local_gap_size;
+	gap_size = array_length / 2;
+	block_size = array_length / num_cpus;
+	local_gap_size = gap_size / block_size;
+	for(block_num = 0; block_num < num_cpus; block_num++){
+		int local_gap_size;
+		printf("%d\n", block_num);		
+    		#pragma omp parallel for shared(array, array_length, gap_size, block_size, ) private (local_gap_size, block_num) default(none)
+		for(local_gap_size = gap_size / block_size; local_gap_size > 0; local_gap_size -= (int) (local_gap_size /2) ){
+			printf("%d\n", local_gap_size);
+			positionalInsertionSort(array, block_size, local_gap_size, block_size*block_num); 
+		}
+		//start += block_size;		
+	}
+	//either just call insertion sort here or(recursively call function with barrier beforehand)
+	//simple parallel option:
+	insertionSort(array, array_length, 1);
+	// 
+	// More parallel:
+	// #pragma barrier;
+	// parallelShellSort(array, array, length, numcpus/2)
+	//
+	//
+	//
+	//
+}
+
+//num_block == num_cpus
+void parallelShellSort1(int *array, int array_length, int num_blocks) {
+	int gap_size;
+	int block_size;
+	block_size = array_length / num_blocks;
+	gap_size = array_length;
+	int current_block;
+	int i;
+	#pragma
+	for(current_block = 0; i*current_block + block_size < array_length; i++){
+		//printf("%d\n", i*current_block + block_size);
+		int local_gap_size;
+		for(local_gap_size = gap_size; local_gap_size > current_block*i; local_gap_size /= 2){
+			//printf("%d\n", local_gap_size);
+			positionalInsertionSort(array, block_size, local_gap_size, current_block);
+         	} 
+	}
+	
+}        
+
+//
+void shellSort(int *array, int array_length){
+	int i, gap_sizes;
+    	for(gap_sizes = array_length / 2; gap_sizes > 0; gap_sizes /= 2){	
+		for(i = 0; i < array_length; i++)
+              		insertionSort(array, array_length, gap_sizes);
+	}
+}
+
+
+uint32_t rand4byte(){
+	return (uint32_t) (rand() % (2^16 - 1));
+}
+
+
+//warning this only works on systems where int size is 4 bytes.
+uint32_t randomUInt32(){ 
+   return (((uint32_t) rand4byte() << 16) ^ ((unsigned int) rand4byte()));  
+}
+
+
+void shuffle(int *array, int array_length, int seed){
+   	int i;
+	int pass;
+	for (pass = 0; pass < seed; pass++){
+		for (i = 0; i < array_length; i++) {
+        		int position1 = randomUInt32() % array_length;
+        		int position2 = randomUInt32() % array_length;
+        		swap(array, position1, position2);
+    		}
+        }
+	
+}
+
+void arrayGen(int array_to_be[], int array_length){
+        int i;
+        for(i = 0; i < array_length; i++){
+                array_to_be[i] = i + 1;
+        }
+}
+
+
+// shuffle seed is num passes of randomiser.
+int main(int argc, char *argv[]){
+	int shuffle_seed;
+	int array_length;
+	int num_cpus;
+	shuffle_seed = atoi(argv[1]);
+	array_length = atoi(argv[2]);
+	num_cpus = atoi(argv[3]);
+	printf("seed: %d\n", shuffle_seed);
+	printf("length: %d\n", array_length);
+	int input[array_length];
+	arrayGen(input, array_length);
+	arrayPrint(input, array_length);	
+	
+	shuffle(input, array_length, shuffle_seed);
+	
+	arrayPrint(input, array_length);	
+	double start_time, end_time, duration;
+
+	start_time = omp_get_wtime();
+	//startsort
+	//insertionSort(input, array_length, 1);
+	//ShellSort(input, array_length);	
+	
+
+	parallelShellSort(input, array_length, num_cpus);
+	//positionalInsertionSort(input, array_length, 1, 2); //works till here
+
+	//endsort
+	#pragma barrier
+	end_time = omp_get_wtime();
+	duration = end_time, start_time;
+	printf("%f\n", duration);
+	arrayPrint(input, array_length);
+	return 0;
+}
