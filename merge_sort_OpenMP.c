@@ -1,5 +1,7 @@
 /* OpenMP Parallel Merge Sort
-   Implementation based on Copyright (C) 2011  Atanas Radenski, Introduction to Algorithms, and Walls and Mirrors
+   Implementation based on (1) Copyright (C) 2011  Atanas Radenski, 
+                           (2) Introduction to Algorithms, 3rd ed. (pg. 30-40, 797-804)
+                           (3) Data Abstraction and Problem Solving with C++: Walls and Mirrors, 7th ed. (pg. 333-337)
 */
 
 #include <stdlib.h>
