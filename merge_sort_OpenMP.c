@@ -82,7 +82,7 @@ main (int argc, char *argv[])
     double end = omp_get_wtime();
     double executionTime = end - start;
     totalTime += executionTime;
-    //printf ("Execution Time = %.4f\n", executionTime);
+    printf ("Execution Time = %.4f\n", executionTime);
     // Result check
     for (i = 1; i < size; i++)
       {
@@ -98,7 +98,7 @@ main (int argc, char *argv[])
     free(temp);
   }
   double averageExecutionTime = totalTime / TRIALS;
-  printf ("Average Execution Time ($d trials) = %.4f\n", TRIALS, averageExecutionTime);
+  printf ("Average Execution Time (%d trials) = %.4f\n", TRIALS, averageExecutionTime);
   return 0;
 }
 
