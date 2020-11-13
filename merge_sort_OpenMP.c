@@ -32,67 +32,73 @@ main (int argc, char *argv[])
       printf ("Usage: %s array-size number-of-threads\n", argv[0]);
       return 1;
     }
-  // Get arguments
-  int size = atoi (argv[1]);	// Array size 
-  int threads = atoi (argv[2]);	// Requested number of threads
-  // Check nested parallelism availability
-  omp_set_nested (1);
-  if (omp_get_nested () != 1)
-    {
-      puts ("Warning: Nested parallelism desired but unavailable");
-    }
-  // Check processors and threads
-  int processors = omp_get_num_procs ();	// Available processors
-  printf ("Array size = %d\nProcesses = %d\nProcessors = %d\n",
-	  size, threads, processors);
-  if (threads > processors)
-    {
-      printf
-	("Warning: %d threads requested, will run_omp on %d processors available\n",
-	 threads, processors);
-      omp_set_num_threads (threads);
-    }
-  int max_threads = omp_get_max_threads ();	// Max available threads
-  if (threads > max_threads)	// Requested threads are more than max available
-    {
-      printf ("Error: Cannot use %d threads, only %d threads available\n",
-	      threads, max_threads);
-      return 1;
-    }
-  // Array allocation
-  int *A = malloc (sizeof (int) * size);
-  int *temp = malloc (sizeof (int) * size);
-  if (A == NULL || temp == NULL)
-    {
-      printf ("Error: Could not allocate array of size %d\n", size);
-      return 1;
-    }
-  // Random array initialization
   int i;
-  srand (314159);
-  for (i = 0; i < size; i++)
-    {
-      A[i] = rand () % size;
-    }
-  // Sort
-  double start = omp_get_wtime();
-  run_omp (A, size, temp, threads);
-  double end = omp_get_wtime();
-  printf ("Execution Time = %.4f\n",
-  	  end - start);
-  // Result check
-  for (i = 1; i < size; i++)
-    {
-      if (!(A[i - 1] <= A[i]))
-	{
-	  printf ("Implementation error: A[%d]=%d > A[%d]=%d\n", i - 1,
-		  A[i - 1], i, A[i]);
-	  return 1;
-	}
-    }
-  puts ("-Success-");
-  free(A);
-  free(temp);
+  const int TRIALS = 100;
+  double totalTime = 0;
+
+  for (i = 1; i <= TRIALS; i++)
+  {
+    // Get arguments
+    int size = atoi (argv[1]);	// Array size 
+    int threads = atoi (argv[2]);	// Requested number of threads
+    // Check nested parallelism availability
+    omp_set_nested (1);
+    if (omp_get_nested () != 1)
+      {
+        puts ("Warning: Nested parallelism desired but unavailable");
+      }
+    // Check processors and threads
+    int processors = omp_get_num_procs ();	// Available processors
+    printf ("Array size = %d\nProcesses = %d\nProcessors = %d\n", size, threads, processors);
+    if (threads > processors)
+      {
+        printf("Warning: %d threads requested, will run_omp on %d processors available\n", threads, processors);
+        omp_set_num_threads (threads);
+      }
+    int max_threads = omp_get_max_threads ();	// Max available threads
+    if (threads > max_threads)	// Requested threads are more than max available
+      {
+        printf ("Error: Cannot use %d threads, only %d threads available\n", threads, max_threads);
+        return 1;
+      }
+    // Array allocation
+    int *A = malloc (sizeof (int) * size);
+    int *temp = malloc (sizeof (int) * size);
+    if (A == NULL || temp == NULL)
+      {
+        printf ("Error: Could not allocate array of size %d\n", size);
+        return 1;
+      }
+    // Random array initialization
+    //int i;
+    srand (314159);
+    for (i = 0; i < size; i++)
+      {
+        A[i] = rand () % size;
+      }
+    // Sort
+    double start = omp_get_wtime();
+    run_omp (A, size, temp, threads);
+    double end = omp_get_wtime();
+    double executionTime = end - start;
+    totalTime += executionTime;
+    //printf ("Execution Time = %.4f\n", executionTime);
+    // Result check
+    for (i = 1; i < size; i++)
+      {
+        if (!(A[i - 1] <= A[i]))
+	        {
+	          printf ("Implementation error: A[%d]=%d > A[%d]=%d\n", i - 1,
+		        A[i - 1], i, A[i]);
+	          return 1;
+	        }
+      }
+    //puts ("-Success-");
+    free(A);
+    free(temp);
+  }
+  double averageExecutionTime = totalTime / TRIALS;
+  printf ("Average Execution Time ($d trials) = %.4f\n", TRIALS, averageExecutionTime);
   return 0;
 }
 
