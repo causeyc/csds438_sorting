@@ -32,11 +32,11 @@ main (int argc, char *argv[])
       printf ("Usage: %s array-size number-of-threads\n", argv[0]);
       return 1;
     }
-  int i;
-  const int TRIALS = 100;
-  double totalTime = 0;
+  int index;
+  const int TRIALS = 1;
+  double totalTime = 0.0000;
 
-  for (i = 1; i <= TRIALS; i++)
+  for (index = 1; index <= TRIALS; index++)
   {
     // Get arguments
     int size = atoi (argv[1]);	// Array size 
@@ -70,7 +70,7 @@ main (int argc, char *argv[])
         return 1;
       }
     // Random array initialization
-    //int i;
+    int i;
     srand (314159);
     for (i = 0; i < size; i++)
       {
@@ -82,7 +82,7 @@ main (int argc, char *argv[])
     double end = omp_get_wtime();
     double executionTime = end - start;
     totalTime += executionTime;
-    printf ("Execution Time = %.4f\n", executionTime);
+    printf ("Execution Time = %.4f\n", end - start);
     // Result check
     for (i = 1; i < size; i++)
       {
