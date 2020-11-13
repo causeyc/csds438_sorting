@@ -14,11 +14,11 @@
 #define SMALL    32
 
 //extern double get_time (void);
-void merge (int a[], int size, int temp[]);
-void insertion_sort (int a[], int size);
-void mergesort_serial (int a[], int size, int temp[]);
-void mergesort_parallel_omp (int a[], int size, int temp[], int threads);
-void run_omp (int a[], int size, int temp[], int threads);
+void merge (int A[], int size, int temp[]);
+void insertion_sort (int A[], int size);
+void mergesort_serial (int A[], int size, int temp[]);
+void mergesort_parallel_omp (int A[], int size, int temp[], int threads);
+void run_omp (int A[], int size, int temp[], int threads);
 void allocateStackSpace();
 int main (int argc, char *argv[]);
 
@@ -60,9 +60,9 @@ main (int argc, char *argv[])
       return 1;
     }
   // Array allocation
-  int *a = malloc (sizeof (int) * size);
+  int *A = malloc (sizeof (int) * size);
   int *temp = malloc (sizeof (int) * size);
-  if (a == NULL || temp == NULL)
+  if (A == NULL || temp == NULL)
     {
       printf ("Error: Could not allocate array of size %d\n", size);
       return 1;
@@ -72,46 +72,48 @@ main (int argc, char *argv[])
   srand (314159);
   for (i = 0; i < size; i++)
     {
-      a[i] = rand () % size;
+      A[i] = rand () % size;
     }
   // Sort
   double start = omp_get_wtime();
-  run_omp (a, size, temp, threads);
+  run_omp (A, size, temp, threads);
   double end = omp_get_wtime();
   printf ("Execution Time = %.4f\n",
   	  end - start);
   // Result check
   for (i = 1; i < size; i++)
     {
-      if (!(a[i - 1] <= a[i]))
+      if (!(A[i - 1] <= A[i]))
 	{
-	  printf ("Implementation error: a[%d]=%d > a[%d]=%d\n", i - 1,
-		  a[i - 1], i, a[i]);
+	  printf ("Implementation error: A[%d]=%d > A[%d]=%d\n", i - 1,
+		  A[i - 1], i, A[i]);
 	  return 1;
 	}
     }
   puts ("-Success-");
+  free(A);
+  free(temp);
   return 0;
 }
 
 // Driver
 void
-run_omp (int a[], int size, int temp[], int threads)
+run_omp (int A[], int size, int temp[], int threads)
 {
   // Enable nested parallelism, if available
   omp_set_nested (1);
   // Parallel mergesort
-  mergesort_parallel_omp (a, size, temp, threads);
+  mergesort_parallel_omp (A, size, temp, threads);
 }
 
 // OpenMP merge sort with given number of threads
 void
-mergesort_parallel_omp (int a[], int size, int temp[], int threads)
+mergesort_parallel_omp (int A[], int size, int temp[], int threads)
 {
   if (threads == 1)
     {
 //        printf("Thread %d begins serial merge sort\n", omp_get_thread_num());
-      mergesort_serial (a, size, temp);
+      mergesort_serial (A, size, temp);
     }
   else if (threads > 1)
     {
@@ -120,18 +122,18 @@ mergesort_parallel_omp (int a[], int size, int temp[], int threads)
 //                      printf("Thread %d begins recursive section\n", omp_get_thread_num());
 #pragma omp section
 	{			//printf("Thread %d begins recursive call\n", omp_get_thread_num());
-	  mergesort_parallel_omp (a, size / 2, temp, threads / 2);
+	  mergesort_parallel_omp (A, size / 2, temp, threads / 2);
 	}
 #pragma omp section
 	{			//printf("Thread %d begins recursive call\n", omp_get_thread_num());
-	  mergesort_parallel_omp (a + size / 2, size - size / 2,
+	  mergesort_parallel_omp (A + size / 2, size - size / 2,
 				  temp + size / 2, threads - threads / 2);
 	}
       }
       // Thread allocation is implementation dependent
       // Some threads can execute multiple sections while others are idle 
       // Merge the two sorted sub-arrays through temp
-      merge (a, size, temp);
+      merge (A, size, temp);
     }
   else
     {
@@ -141,72 +143,72 @@ mergesort_parallel_omp (int a[], int size, int temp[], int threads)
 }
 
 void
-mergesort_serial (int a[], int size, int temp[])
+mergesort_serial (int A[], int size, int temp[])
 {
   ///*
   // Switch to insertion sort for small arrays
   if (size <= SMALL)
     {
-      insertion_sort (a, size);
+      insertion_sort (A, size);
       return;
     }
   //*/
-  mergesort_serial (a, size / 2, temp);
-  mergesort_serial (a + size / 2, size - size / 2, temp);
-  // Merge the two sorted subarrays into a temp array
-  merge (a, size, temp);
+  mergesort_serial (A, size / 2, temp);
+  mergesort_serial (A + size / 2, size - size / 2, temp);
+  // Merge the two sorted subarrays into A temp array
+  merge (A, size, temp);
 }
 
 void
-merge (int a[], int size, int temp[])
+merge (int A[], int size, int temp[])
 {
   int i1 = 0;
   int i2 = size / 2;
   int tempi = 0;
   while (i1 < size / 2 && i2 < size)
     {
-      if (a[i1] < a[i2])
+      if (A[i1] < A[i2])
 	{
-	  temp[tempi] = a[i1];
+	  temp[tempi] = A[i1];
 	  i1++;
 	}
       else
 	{
-	  temp[tempi] = a[i2];
+	  temp[tempi] = A[i2];
 	  i2++;
 	}
       tempi++;
     }
   while (i1 < size / 2)
     {
-      temp[tempi] = a[i1];
+      temp[tempi] = A[i1];
       i1++;
       tempi++;
     }
   while (i2 < size)
     {
-      temp[tempi] = a[i2];
+      temp[tempi] = A[i2];
       i2++;
       tempi++;
     }
-  // Copy sorted temp array into main array, a
-  memcpy (a, temp, size * sizeof (int));
+  // Copy sorted temp array into main array, A
+  memcpy (A, temp, size * sizeof (int));
 }
 
 void
-insertion_sort (int a[], int size)
+insertion_sort (int A[], int size)
 {
   int i;
   for (i = 0; i < size; i++)
     {
-      int j, v = a[i];
+      int j, v = A[i];
       for (j = i - 1; j >= 0; j--)
 	{
-	  if (a[j] <= v)
+	  if (A[j] <= v)
 	    break;
-	  a[j + 1] = a[j];
+	  A[j + 1] = A[j];
 	}
-      a[j + 1] = v;
+      A[j + 1] = v;
     }
 }
 
