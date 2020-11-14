@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=00:10:00
+#SBATCH --time=01:30:00
 #SBATCH -N 1	# nodes 
 #SBATCH -n 16	# processors
 #SBATCH --mem=64gb
@@ -16,7 +16,10 @@ for i in 1 2 4 8 16
 do
   for j in 10000, 100000, 1000000, 10000000, 100000000 1000000000
   do
+      echo "CPUs: $i"
+      echo "Array Size: $j"
       ./merge_sort_OpenMP $j $i
+      echo "--------------------"
   done
 done
 
