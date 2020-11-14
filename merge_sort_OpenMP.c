@@ -82,7 +82,7 @@ main (int argc, char *argv[])
     double end = omp_get_wtime();
     double executionTime = end - start;
     totalTime += executionTime;
-    printf ("Execution Time = %.4f\n", end - start);
+    //printf ("Execution Time = %.4f\n", end - start);
     // Result check
     for (i = 1; i < size; i++)
       {
