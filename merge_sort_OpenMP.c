@@ -33,7 +33,7 @@ main (int argc, char *argv[])
       return 1;
     }
   int index;
-  const int TRIALS = 100;
+  const int TRIALS = 10;
   double totalTime = 0.0000;
 
   for (index = 1; index <= TRIALS; index++)
