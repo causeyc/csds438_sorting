@@ -49,7 +49,7 @@ main (int argc, char *argv[])
       }
     // Check processors and threads
     int processors = omp_get_num_procs ();	// Available processors
-    printf ("Array size = %d\nProcesses = %d\nProcessors = %d\n", size, threads, processors);
+    //printf ("Array size = %d\nProcesses = %d\nProcessors = %d\n", size, threads, processors);
     if (threads > processors)
       {
         printf("Warning: %d threads requested, will run_omp on %d processors available\n", threads, processors);
