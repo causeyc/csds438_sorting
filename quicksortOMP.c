@@ -1,6 +1,7 @@
 /* C implementation QuickSort with OpenMP */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <omp.h>
 
 // A utility function to swap two elements
@@ -56,9 +57,12 @@ void quickSort(int arr[], int low, int high)
 }
 
 // Driver program to test above functions
-int main()
+int main(int argc, char *argv[])
 {
-	int n = 40000000;
+	if (argc != 2) {
+		printf("Incorrect usage. Usage is ./quicksortOMP <number of elements to sort>");
+	}
+	int n = atoi(argv[1]); // read in number of elements from command line argument
 	int *arr;
 	arr = (int *)malloc(sizeof(int)*n);
 
@@ -69,10 +73,14 @@ int main()
 		arr[i] = (rand() % n); // random numbers between 1 and n
 	}
 
+	double time_start = omp_get_wtime();
 	#pragma omp parallel default(none) shared(arr, n)
 	{
 		#pragma omp single nowait
 		{ quickSort(arr, 0, n-1); }
 	}
+	double time_end = omp_get_wtime();
+
+	printf("Sorting time: %f seconds", time_end - time_start);
 	return 0;
 }
