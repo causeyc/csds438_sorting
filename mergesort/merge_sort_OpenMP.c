@@ -1,4 +1,5 @@
-/* OpenMP Parallel Merge Sort
+/* Author: Colin Causey
+   OpenMP Parallel Merge Sort
    Implementation based on (1) Copyright (C) 2011  Atanas Radenski, 
                            (2) Introduction to Algorithms, 3rd ed. (pg. 30-40, 797-804)
                            (3) Data Abstraction and Problem Solving with C++: Walls and Mirrors, 7th ed. (pg. 333-337)
@@ -8,28 +9,28 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <stdbool.h>
 #include <omp.h>
 
+bool validateSort(int theArray[], int first, int last);
 void merge (int A[], int size, int temp[]);
 void mergesort_serial (int A[], int size, int temp[]);
 void mergesort_parallel_omp (int A[], int size, int temp[], int threads);
 void run_omp (int A[], int size, int temp[], int threads);
-void allocateStackSpace();
 int main (int argc, char *argv[]);
 
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
-  puts ("-OpenMP Recursive Mergesort-\t");
+  puts("-OpenMP Parallel Mergesort-\t");
   // Check arguments
   if (argc != 3)		/* argc must be 3 for proper execution! */
     {
-      printf ("Usage: %s array-size number-of-threads\n", argv[0]);
+      printf("Usage: %s array-size number-of-threads\n", argv[0]);
       return 1;
     }
   int index;
   const int TRIALS = 5;
-  double totalTime = 0.0000;
+  double totalTime = 0.000000;
 
   for (index = 1; index <= TRIALS; index++)
   {
@@ -40,7 +41,7 @@ main (int argc, char *argv[])
     omp_set_nested (1);
     if (omp_get_nested () != 1)
       {
-        puts ("Warning: Nested parallelism desired but unavailable");
+        puts("Warning: Nested parallelism desired but unavailable");
       }
     // Check processors and threads
     int processors = omp_get_num_procs ();	// Available processors
@@ -53,7 +54,7 @@ main (int argc, char *argv[])
     int max_threads = omp_get_max_threads ();	// Max available threads
     if (threads > max_threads)	// Requested threads are more than max available
       {
-        printf ("Error: Cannot use %d threads, only %d threads available\n", threads, max_threads);
+        printf("Error: Cannot use %d threads, only %d threads available\n", threads, max_threads);
         return 1;
       }
     // Array allocation
@@ -61,7 +62,7 @@ main (int argc, char *argv[])
     int *temp = malloc (sizeof (int) * size);
     if (A == NULL || temp == NULL)
       {
-        printf ("Error: Could not allocate array of size %d\n", size);
+        printf("Error: Could not allocate array of size %d\n", size);
         return 1;
       }
     // Random array initialization
@@ -77,29 +78,24 @@ main (int argc, char *argv[])
     double end = omp_get_wtime();
     double executionTime = end - start;
     totalTime += executionTime;
-    //printf ("Execution Time = %.4f\n", end - start);
-    // Result check
-    for (i = 1; i < size; i++)
-      {
-        if (!(A[i - 1] <= A[i]))
-	        {
-	          printf ("Implementation error: A[%d]=%d > A[%d]=%d\n", i - 1,
-		        A[i - 1], i, A[i]);
-	          return 1;
-	        }
-      }
+    //printf ("Execution Time = %.6f\n", end - start);
+    // Validate that array is correctly sorted
+    if(validateSort(A, 0, size - 1) == false)
+    {
+      puts("Error. Array not correctly sorted");
+      return 1;
+    }
     //puts ("-Success-");
     free(A);
     free(temp);
   }
   double averageExecutionTime = totalTime / TRIALS;
-  printf ("Average Execution Time (%d trials) = %.4f\n", TRIALS, averageExecutionTime);
+  printf ("Average Execution Time (%d trials) = %.6f\n", TRIALS, averageExecutionTime);
   return 0;
 }
 
 // Driver
-void
-run_omp (int A[], int size, int temp[], int threads)
+void run_omp (int A[], int size, int temp[], int threads)
 {
   // Enable nested parallelism, if available
   omp_set_nested (1);
@@ -108,8 +104,7 @@ run_omp (int A[], int size, int temp[], int threads)
 }
 
 // OpenMP merge sort with given number of threads
-void
-mergesort_parallel_omp (int A[], int size, int temp[], int threads)
+void mergesort_parallel_omp (int A[], int size, int temp[], int threads)
 {
   if (threads == 1)
     {
@@ -127,8 +122,7 @@ mergesort_parallel_omp (int A[], int size, int temp[], int threads)
 	}
 #pragma omp section
 	{			//printf("Thread %d begins recursive call\n", omp_get_thread_num());
-	  mergesort_parallel_omp (A + size / 2, size - size / 2,
-				  temp + size / 2, threads - threads / 2);
+	  mergesort_parallel_omp (A + size / 2, size - size / 2, temp + size / 2, threads - threads / 2);
 	}
       }
       // Thread allocation is implementation dependent
@@ -143,8 +137,7 @@ mergesort_parallel_omp (int A[], int size, int temp[], int threads)
     }
 }
 
-void
-mergesort_serial (int A[], int size, int temp[])
+void mergesort_serial (int A[], int size, int temp[])
 {
   if (size == 1) // one-element arrays are trivially sorted
     {
@@ -156,8 +149,7 @@ mergesort_serial (int A[], int size, int temp[])
   merge (A, size, temp);
 }
 
-void
-merge (int A[], int size, int temp[])
+void merge (int A[], int size, int temp[])
 {
   int i1 = 0;
   int i2 = size / 2;
@@ -190,4 +182,17 @@ merge (int A[], int size, int temp[])
     }
   // Copy sorted temp array into main array, A
   memcpy (A, temp, size * sizeof (int));
+}
+
+bool validateSort(int theArray[], int first, int last)
+{
+  int i = 0;
+  for(i = 0; i <= last - 1; i++)
+    {
+      if(theArray[i] > theArray[i + 1])
+	{
+	  return false;
+	}
+    }
+  return true;
 }
