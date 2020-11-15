@@ -53,38 +53,37 @@
 	\maketitle
 	
 \begin{abstract}
-“Many computer scientists consider sorting to be the most fundamental problem in the study of algorithms” (Introduction to Algorithms, pg. 148).
-
 Sorting is commonly viewed as the most fundamental problem in the study of algorithms. Some cited reasons for this are that a great many software applications use sorting for various reasons, and a great many algorithms use sorting as a subroutine \cite{cormen_introduction_2009}. 
 Given its ubiquity, therefore, it is valuable to be able to solve the sorting problem efficiently. 
 For this reason, many efficient sorting algorithms have been developed (e.g., mergesort, quicksort, heapsort). 
-Given the asymptotic lower bound of $\Omega(nlog(n)$ for comparison-based sorting algorithms such as these, a natural route to take to achieve greater performance is parallel computing. 
+Given the asymptotic lower bound of $\Omega(nlog(n))$ for comparison-based sorting algorithms such as these, a natural route to take to achieve greater performance is parallel computing. 
 In the interest of wanting to select the optimal sorting algorithm to run on a parallel computer, it is valuable to empirically compare the performance of various parallelized sorting algorithms. 
 This is the aim of our research. 
-We will conduct an empirical analysis and comparison of various parallel sorting algorithms. 
-The criteria for evaluation will be (i) execution time, (ii) memory footprint, and (iii) scalability. 
-The research will be conducted on Case Western Reserve’s high-performance computing (HPC) architecture. 
-We will implement various parallel sorting algorithms and execute them with variously sized and randomly permuted input arrays. The execution times and memory footprints will be recorded for each run. 
-Additionally, we will run the algorithms on a varying number of CPUs (e.g., one CPU, two CPUs, four CPUs) in order to assess their scalability. 
-After these data have been collected, we will perform data analysis and use it to compare the various sorting algorithms. 
+We conduct an empirical analysis and comparison of various parallel sorting algorithms. 
+The criteria for evaluation are (i) execution time and (ii) scalability. 
+The research was conducted on Case Western Reserve’s high-performance computing (HPC) architecture. 
+We implement multiple parallel sorting algorithms and execute them with variously sized and randomly permuted input arrays. The execution times are recorded for each run. 
+Additionally, we will run the algorithms on a varying number of CPUs (e.g., one CPU, two CPUs, four CPUs) in order to assess their scalability.
+After collecting the data, we performed data analysis and used it to compare the sorting algorithms. 
 The comparison will facilitate making an informed choice about which sorting algorithm to use under various conditions (e.g., the number of CPUs available and the size of the input array).
 \end{abstract}
 
 \section{Introduction}
-Sorting is a fundamental problem in many different fields. 
+Sorting is a fundamental problem to be solved in many algorithms and applications.
 Any algorithm that depends on having some ordering to the data will likely deal with sorting in some form, and even simple tasks like "find the top $n$ examples" are accomplished using sorts. 
-However, today's world of "Big Data" has led to an astronomical increase in the amount of computing power used to process it. 
-As a response, the field of distributed computing has become more and more important. 
-Distributed computing is a paradigm where computation is spread across many processors, working at the same time, rather then the usual sequential, single-core processing method. 
-In this fashion, parallelized versions of different sorting algorithms have emerged. 
-This study focuses on four of the most popular sorting algorithms: Quicksort, Mergesort, Heapsort, and Insertion sort. 
+Today's world of "Big Data" has led to an astronomical increase in the amount of computing power needed to efficiently process data.
+As a result, parallel computing has become an important and necessary approach to solving computationally-intensive problems.
+Parallel computing is a paradigm where computation is spread across many processors, working at the same time, rather then the usual sequential, processing method.
+The processors used in parallel computation can be within a single node (as in multithreading and shared-memory parallel architectures) or they can be distributed across multiple nodes interacting with each other (as in message-passing architectures).
+In order to take advantage of the performance increases enabled by parallel computing, parallelized versions of various sorting algorithms have been developed and studied. While theoretical analysis of parallel sorting algorithms is useful for understanding the asymptotic differences in the runtimes, determining and analysing the empirical performance of the algorithms on a specific computer architecture is valuable for making an informed choice about which algorithm to choose for that particular architecture and under various conditions (e.g., the number of CPUs available and the size of the input array to sort).
+This study focuses on an emperical evaluation of multiple parallelized versions of popular sorting algorithms: Quicksort, Mergesort, Heapsort, and Insertion Sort, with a particular focus on Quicksort and Mergesort. The algorithms are parallelized with OpenMP so as to take advantage of multithreaded, shared-memory parallelism on Case Western Reserve's HPC Markov cluster.
 
 \section{Background \& Theory}
 As mentioned before, all comparison based sorts have an asymptotic lower bound of $\Omega(nlog(n)$. 
 Indeed,  Mergesort, and Heapsort achieve a $O(nlog(n))$ upper bound as well, and Quicksort behaves as $O(nlog(n))$ in the average case. 
 Insertion sort, as a less advanced algorithm, has a upper bound of $O(n^2)$, as does Quicksort. \cite{cormen_introduction_2009} 
 However, Quicksort's upper bound is rarely the case, and tends to have smaller constant factors then either Mergesort or Heapsort. \cite{hoare_algorithm_1961} % TODO wrong cite
-Additionally, each algorithm is constructed differently, and some are more amendable to parallelization then others. 
+Additionally, each algorithm is constructed differently, and some are more amendable to parallelization than others. 
 \subsection{Insertion sort}
 Insertion sort is the simplest sorting algorithm discussed here. 
 It works by iteratively building a sorted array one element at a time. 
