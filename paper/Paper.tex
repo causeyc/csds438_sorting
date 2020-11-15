@@ -22,7 +22,7 @@
 	filecolor = blue,
 	urlcolor = blue
 }	
-
+\usepackage[ruled,vlined]{algorithm2e}
 \newcommand\MyBox[2]{
 	\fbox{\lower0.75cm
 		\vbox to 1.7cm{\vfil
@@ -34,7 +34,7 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
 		T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
-		\title{Comparing Parallel Sorting Algorithms on a High Performance Computing Cluster}
+		\title{Comparing Parallel Sorting Algorithms on a High Performance Computing Cluster Using OpenMP}
 			\author{\IEEEauthorblockN{Benjamin Pierce}
 			\IEEEauthorblockA{
 				\textit{Department of Computer and Data Sciences}\\ }
@@ -112,7 +112,7 @@ This process, called \textit{heapification}, is an $O(n)$ algorithum.
 Sorting is performed by repeatably popping the root node (the maximum value) and re-heapifying. 
 This procedure takes advantage of the binary tree structure, and is worst case $O(n log (n))$ overall.  \cite{cormen_introduction_2009}
 Unfortunately, Heapsort is a poor candidate for paralleization, as it does not partition into subarrays and depends on the root node being the absolute maximum. 
-% TODO @Ben add detail on your implementation
+
 \subsection{Quicksort}
 The final sort discussed here is Quicksort, another $O(n log(n))$ comparison sort. 
 Developed in 1961 \cite{hoare_algorithm_1961}, Quicksort is a partitioning sort that works by selecting a pivot element in an array and partitioning based on a comparison to the pivot, as shown in Figure \ref{qck}. 
@@ -136,9 +136,102 @@ Using the Simple Linux Utility for Resource Management \cite{yoo_slurm_2003} (SL
 % TODO do we need more detail?
 
 \section{Results}
-% TODO report results 
-% TODO plot results as a function of array size
-% TODO other results shit
+In this section, the results of each algorithm will be shown. 
+The main variable of interest is how much time each algorithm takes as a function of the length of the input array $n$. 
+We begin with an individual discussion of Quicksort. 
+
+\subsection{Quicksort}
+There was great success with parallel Quicksort. 
+As a divide-and-conquer algorithm, it is a naturally parallel algorithum. 
+The results of this algorithum can be seen in Figure \ref{qck_per}. 
+\begin{figure}[h]
+	\includegraphics[width=10.5cm]{qs_mt.png} 
+	\caption{Performance of Quicksort}
+	\label{qck_per}
+\end{figure}
+
+%TODO add discussions on quicksort performance
+
+\subsection{Heapsort}
+Heapsort proved to be purely sequential, as the core of the algorithm depends on universal array access in the current form. 
+The results of the nonparallel Heapsort are seen in Figure \ref{hs_per}. 
+\begin{figure}[h]
+	\includegraphics[width=9cm]{hs_per.png} 
+	\caption{Performance of Heapsort}
+	\label{hs_per}
+\end{figure}
+As Figure \ref{hs_per} shows, the performance of Heapsort becomes quite poor very rapidly. 
+Although in its current form, Heapsort cannot be parallelized, we present an alternative algorithm utilizing the core ideas of Heapsort in a parallel manner. 
+
+\begin{algorithm}
+	\SetAlgoLined
+	\KwResult{A sorted list }
+	list $a$\;
+	list $result$\;
+	int $threads$\;
+	let $lists$ be $a$ partitioned into $threads$\\
+	\While{every list in lists is not empty }{
+		\textbf{In Parallel}\;
+		\hspace{0.5cm}$heapify$ each list\;
+		$pop$ the largest element of all sub-heaps into $result$\;
+		$re-heapify$ the heap that has been popped\;
+	}
+	\Return $result$
+	\caption{Parallel-Heaps}
+	\label{alg}
+\end{algorithm}
+Algorithm \ref{alg} presents a possibly parallel algorithm that utilizes the idea of Heapsort. 
+Essentially, the algorithm divides the array into many smaller heaps, each managed by a single thread. 
+This way, all heapification can be done in parallel, and the "max" item is selected from the number of heaps through a straightforward traversal of the roots of the sub-heaps. 
+However, this algorithum has several downsides. 
+One is that the end reheapification is still sequential; as by necessity, one heap must be popped, the algorithm must wait on the reheapification of that heap. 
+This heap will be smaller by a constant factor then the traditional, single-threaded Heapsort, however. 
+Therefore, $Parallel-Heaps$ will be at most a constant speedup for Heapsort.
+
+$Parallel-Heaps$ was not implemented in this study, as it is not possible to do with the OpenMP framework; such a method would require POSIX threads. 
+For the sake of comparison, this algorithm was thus excluded. 
+Further investigation of this $Parallel-Heaps$ algorithm is a topic for further study.  
+\subsection{Mergesort}
+As with Quicksort, Mergesort proved to be naturally parallel. 
+The results of parallel Mergesort can be seen in Figure \ref{ms_per}
+\begin{figure}[h]
+	\includegraphics[width=9cm]{ms_per.png} 
+	\caption{Performance of Mergesort}
+	\label{ms_per}
+\end{figure}
+%TODO add mergesort implementation details
+
+
+
+\subsection{Shellsort}
+%TODO Do we have results for shellsort?
+
+
+\subsection{Comparative Results}
+Results are compared in a few different ways. 
+One is to hold the number of threads constant, and plot the performance of each algorithm, as in Figure \ref{msqshs}, which shows that Heapsort, which is not paralleized, proves to be much worse then either Quicksort or Mergesort.
+\begin{figure}
+	\includegraphics[width=10.5cm]{mshsqs.png} 
+	\caption{Comparative Performance with 8 threads}
+	\label{msqshs}
+\end{figure}
+%TODO Add deets
+Additionally, it is useful to compare results on a single array size with multiple threads. 
+This can be seen for $10^6$ elements in Figure \ref{1e5}
+\begin{figure}[h]
+	\includegraphics[width=9cm]{1e5.png} 
+	\caption{Comparative Performance with for $10^4$ elements}
+	\label{1e5}
+\end{figure}
+Interestingly, the performance of Quicksort appears to worsen with the number of threads more then Mergesort; this suggests significant overhead introduced by parallelization. 
+However, this effect goes away with an increase in the number of elements, as in Figure \ref{1e8}. 
+\begin{figure}[h]
+	\includegraphics[width=9cm]{1e8.png} 
+	\caption{Comparative Performance with for $10^7$ elements}
+	\label{1e8}
+\end{figure}
+
+This suggests that there is significant overhead with smaller array sizes, but this is overcome by efficeicny gains on larger array sizes. 
 \section{Conclusion}
 % TODO these are what we expect to see...
 As expected, the three $O(n log(n))$ algorithms perform better then Insertion sort. 
