@@ -10,12 +10,7 @@
 #include <sys/resource.h>
 #include <omp.h>
 
-// Arrays size <= SMALL switches to insertion sort
-#define SMALL    32
-
-//extern double get_time (void);
 void merge (int A[], int size, int temp[]);
-void insertion_sort (int A[], int size);
 void mergesort_serial (int A[], int size, int temp[]);
 void mergesort_parallel_omp (int A[], int size, int temp[], int threads);
 void run_omp (int A[], int size, int temp[], int threads);
@@ -151,14 +146,10 @@ mergesort_parallel_omp (int A[], int size, int temp[], int threads)
 void
 mergesort_serial (int A[], int size, int temp[])
 {
-  ///*
-  // Switch to insertion sort for small arrays
-  if (size <= SMALL)
+  if (size == 1) // one-element arrays are trivially sorted
     {
-      insertion_sort (A, size);
       return;
     }
-  //*/
   mergesort_serial (A, size / 2, temp);
   mergesort_serial (A + size / 2, size - size / 2, temp);
   // Merge the two sorted subarrays into A temp array
@@ -199,41 +190,4 @@ merge (int A[], int size, int temp[])
     }
   // Copy sorted temp array into main array, A
   memcpy (A, temp, size * sizeof (int));
-}
-
-void
-insertion_sort (int A[], int size)
-{
-  int i;
-  for (i = 0; i < size; i++)
-    {
-      int j, v = A[i];
-      for (j = i - 1; j >= 0; j--)
-	{
-	  if (A[j] <= v)
-	    break;
-	  A[j + 1] = A[j];
-	}
-      A[j + 1] = v;
-    }
-}
-
-void allocateStackSpace()
-{
-  const rlim_t kStackSize = (64L * 1024L * 1024L) * 128;
-  struct rlimit rl;
-  int result;
-  result = getrlimit(RLIMIT_STACK, &rl);
-  if (result == 0)
-    {
-      if (rl.rlim_cur < kStackSize)
-        {
-	  rl.rlim_cur = kStackSize;
-	  result = setrlimit(RLIMIT_STACK, &rl);
-	  if (result != 0)
-            {
-	      fprintf(stderr, "setrlimit returned result = %d\n", result);
-            }
-        }
-    }
 }
