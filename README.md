@@ -1,5 +1,5 @@
-# csds438_sorting
-CSDS 438 HPC Final Project  
+# CSDS 438 Final Project - Group #1
+In our CSDS 438 HPC final project we measure the effect of adding more processing resources to commonly implemented sorting algorithms.
 
 ## Reproduction of Results  
 
