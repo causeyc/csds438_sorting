@@ -5,7 +5,7 @@ CSDS 438 HPC Final Project
 
 ### Mergesort:  
 
-**STATUS**  
+**STATUS:**  Working! 
 
 **RUNNING**  
 
@@ -13,7 +13,7 @@ CSDS 438 HPC Final Project
 
 ### QuickSort:  
 
-**STATUS**
+**STATUS:**  Working!
 
 **RUNNING**  
 
@@ -21,17 +21,22 @@ CSDS 438 HPC Final Project
 
 ### HeapSort:  
 
-**STATUS**
+**STATUS:**  Working, nonparallizable 
 
 **RUNNING**  
 
-### ShellSort:  
+### ShellSort
 
-**STATUS**
+**STATUS:**  Working with slight modifications, not yey implementable in OpenMP
 
 **RUNNING** 
 
 ## Analysis  
 
+Please refer to the ***paper***
+
+## FAQ's
+
+Please email one of the authors in the title of ***paper***
 
 
