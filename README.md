@@ -9,7 +9,7 @@ In our CSDS 438 HPC final project we measure the effect of adding more processin
 
 **RUNNING MERGESORT**  
 After Cloning:
-To run MergeSort, simply *cd* to the Mergesort file ```cd ./mergeSort``` and submit your the sorting.slurm job file to the HPC enviroment by running ```sbatch job.slurm```. When the procedure is done, you should see an output file in this folder named something like <out.\w+>. This files contain the results. 
+To run MergeSort, simply *cd* to the Mergesort file ```cd ./mergeSort``` and submit the sorting.slurm job file to the HPC enviroment by running ```sbatch sorting.slurm```. When the procedure is done, you should see an output file in this folder named something like <out.\w+>. This files contain the results. 
 
 **CSV**  
 The CSV file was made by hand using the outputs of the SLURM script described above. We do not currently have a scripted way to produce a CSV file from MergeSort output.
@@ -20,7 +20,7 @@ The CSV file was made by hand using the outputs of the SLURM script described ab
 
 **RUNNING QUICKSORT**  
 After Cloning:
-To run QuickSort, simply *cd* to the Mergesort file ```cd ./quickSort``` and submit your the qs-job.slurm job file to the HPC enviroment by running ```sbatch job.slurm```. When the procedure is done, you should see an output file in this folder named something like <out.\w+>. This files contain the results.
+To run QuickSort, simply *cd* to the Mergesort file ```cd ./quickSort``` and submit the qs-job.slurm job file to the HPC enviroment by running ```sbatch qs-job.slurm```. When the procedure is done, you should see an output file in this folder named something like <out.\w+>. This files contain the results.
 
 **CSV**  
 The CSV file was made by hand using the outputs of the SLURM script described above. We do not currently have a scripted way to produce a CSV file from QuickSort output.
@@ -31,7 +31,7 @@ The CSV file was made by hand using the outputs of the SLURM script described ab
 
 **RUNNING HEAPSORT**  
 After Cloning:
-To run HeapSort, simply *cd* to the Mergesort file ```cd ./heapSort``` and submit your the job.slurm job file to the HPC enviroment by running ```sbatch job.slurm```. When the procedure is done, you should see an output file in this folder named something like <out.\w+>. This files contain the results.
+To run HeapSort, simply *cd* to the Mergesort file ```cd ./heapSort``` and compile and execute on a compute node in HPC.
 
 ### ShellSort:
 
