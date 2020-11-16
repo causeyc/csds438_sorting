@@ -55,53 +55,51 @@
 \begin{abstract}
 Sorting is commonly viewed as the most fundamental problem in the study of algorithms. Some cited reasons for this are that a great many software applications use sorting for various reasons, and a great many algorithms use sorting as a subroutine \cite{cormen_introduction_2009}. 
 Given its ubiquity, therefore, it is valuable to be able to solve the sorting problem efficiently. 
-For this reason, many efficient sorting algorithms have been developed (e.g., mergesort, quicksort, heapsort). 
+For this reason, many efficient sorting algorithms have been developed and studied. Three of the most popular and efficient sorting algorithms are Mergesort, Quicksort,  and Heapsort. 
 Given the asymptotic lower bound of $\Omega(nlog(n))$ for comparison-based sorting algorithms such as these, a natural route to take to achieve greater performance is parallel computing. 
-In the interest of wanting to select the optimal sorting algorithm to run on a parallel computer, it is valuable to empirically compare the performance of various parallelized sorting algorithms. 
+In the interest of wanting to select the optimal sorting algorithm to run on a particular parallel computing architecture, it is valuable to empirically compare the performance of different parallelized sorting algorithms. 
 This is the aim of our research. 
-We conduct an empirical analysis and comparison of various parallel sorting algorithms. 
+In this project, we conduct an empirical analysis and comparison of parallelized versions of two popular sorting algorithms: Mergesort and Quicksort. Heapsort and the difficulties of parallelizing it are also considered. 
 The criteria for evaluation are (i) execution time and (ii) scalability. 
-The research was conducted on Case Western Reserve’s high-performance computing (HPC) architecture. 
-We implement multiple parallel sorting algorithms and execute them with variously sized and randomly permuted input arrays. The execution times are recorded for each run. 
-Additionally, we will run the algorithms on a varying number of CPUs (e.g., one CPU, two CPUs, four CPUs) in order to assess their scalability.
-After collecting the data, we performed data analysis and used it to compare the sorting algorithms. 
+The research was conducted on Case Western Reserve’s high-performance computing (HPC) architecture, specifically the Markov cluster. 
+We implement parallel Mergesort and Quicksort and execute them with variously sized and randomly permuted input arrays. The execution times are recorded for each run. 
+Additionally, we run the algorithms on a varying number of CPUs (e.g., one CPU, two CPUs, four CPUs) in order to assess their scalability.
+After collecting the data, we perform data analysis and use it to compare the algorithms according to the aforementioned criteria for evaluation. 
 The comparison will facilitate making an informed choice about which sorting algorithm to use under various conditions (e.g., the number of CPUs available and the size of the input array).
 \end{abstract}
 
 \section{Introduction}
 Sorting is a fundamental problem to be solved in many algorithms and applications.
-Any algorithm that depends on having some ordering to the data will likely deal with sorting in some form, and even simple tasks like "find the top $n$ examples" are accomplished using sorts. 
-Today's world of "Big Data" has led to an astronomical increase in the amount of computing power needed to efficiently process data.
-As a result, parallel computing has become an important and necessary approach to solving computationally-intensive problems.
-Parallel computing is a paradigm where computation is spread across many processors, working at the same time, rather then the usual sequential, processing method.
-The processors used in parallel computation can be within a single node (as in multithreading and shared-memory parallel architectures) or they can be distributed across multiple nodes interacting with each other (as in message-passing architectures).
-In order to take advantage of the performance increases enabled by parallel computing, parallelized versions of various sorting algorithms have been developed and studied. While theoretical analysis of parallel sorting algorithms is useful for understanding the asymptotic differences in the runtimes, determining and analysing the empirical performance of the algorithms on a specific computer architecture is valuable for making an informed choice about which algorithm to choose for that particular architecture and under various conditions (e.g., the number of CPUs available and the size of the input array to sort).
-This study focuses on an emperical evaluation of multiple parallelized versions of popular sorting algorithms: Quicksort, Mergesort, Heapsort, and Insertion Sort, with a particular focus on Quicksort and Mergesort. The algorithms are parallelized with OpenMP so as to take advantage of multithreaded, shared-memory parallelism on Case Western Reserve's HPC Markov cluster.
+Any algorithm or application, for instance, that depends on having some ordering to its data will likely deal with sorting in some form. Because of its pervasiveness, solving the sorting problem efficiently is highly desirable. For this reason, many efficient sorting algorithms have been developed. Three of the most popular are Mergesort, Quicksort, and Heapsort. All three of these algorithms have time complexities of $O(nlog(n))$ in the average case. Mergesort and Heapsort also achieve this time bound in the worst case, while Quicksort can in rare situations exhibit a runtime of $O(n^2)$ in the worst case. Since the asymptotic lower bound for comparison-based sorting algorithms such as these is $\Omega(nlog(n))$, significantly improving the performance of them isn't feasible with serial computation. For this reason, we must turn to parallel computation to achieve significant performance gains. In order to take advantage of the performance increases enabled by parallel computing, parallelized versions of various sorting algorithms have been developed and studied. While theoretical analysis of parallel sorting algorithms is useful for understanding the asymptotic differences in the runtimes, determining and analysing the empirical performance of the algorithms on a specific computer architecture is valuable for making an informed choice about which algorithm to choose for that particular architecture and under various conditions (e.g., the number of CPUs available and the size of the input array to sort).
+This study focuses on an empirical evaluation of parallelized versions of two of the most popular sorting algorithms: Quicksort and Mergesort. Heapsort is also analyzed as it is comparable to Quicksort and Mergesort, although it is not parallelized due to difficulties that we will discuss. The algorithms are parallelized with OpenMP so as to take advantage of multithreaded, shared-memory parallelism on Case Western Reserve's HPC Markov cluster.
+The layout of the paper is as follows: In Section II, we give a brief overview of parallel computing and sorting algorithms. Section III...
 
 \section{Background \& Theory}
+Today's world of "Big Data" has led to an astronomical increase in the amount of computing power needed to efficiently process data.
+As a result, parallel computing has become an important and necessary approach to solving computationally-intensive problems.
+Parallel computing is a paradigm where computation is spread across many processors working on multiple tasks and/or data at the same time. This is in contrast to serial computation in which each step of a computation is performed one after another.
+The processors used in parallel computation can be within a single node (as in multithreading and shared-memory parallel architectures) or they can be distributed across multiple nodes interacting with each other (as in message-passing architectures). In order to take advantage of parallel computing, algorithms must be "parallelized," i.e., written in such a way as to take advantage of parallel computing. This usually involves specifying in the algorithm which parts can execute in parallel as well as dividing tasks the algorithm performs among multiple processors. Some algorithms are more inherently parallelizable than others. Algorithms, for instance, that operate by breaking a problem up into subproblems that can be solved independently (i.e., divide-and-conquer algorithms) are natural candidates for parallelization. The divide-and-conquer paradigm consists of three stages for solving a problem: the \textit{divide} stage, the \textit{conquer} stage, and the \textit{combine} stage. In the divide stage, the problem is recursively divided up into subproblems until the subproblems become sufficiently simple such that they can be solved directly. In the conquer stage, the subproblems are solved. Finally, in the combine stage, the subproblems are combined in such a way that the original problem is solved. Because both Mergesort and Quicksort follow the divide-and-conquer paradigm, they are excellent candidates for parallelization. Algorithms that do not follow this paradigm can be more difficult to parallelize. Heapsort falls into this category. As we will discuss, Heapsort is much more difficult to parallelize than Mergesort and Quicksort.
+
 As mentioned before, all comparison based sorts have an asymptotic lower bound of $\Omega(nlog(n)$. 
 Indeed,  Mergesort, and Heapsort achieve a $O(nlog(n))$ upper bound as well, and Quicksort behaves as $O(nlog(n))$ in the average case. 
 Insertion sort, as a less advanced algorithm, has a upper bound of $O(n^2)$, as does Quicksort. \cite{cormen_introduction_2009} 
 However, Quicksort's upper bound is rarely the case, and tends to have smaller constant factors then either Mergesort or Heapsort. \cite{hoare_algorithm_1961} % TODO wrong cite
-Additionally, each algorithm is constructed differently, and some are more amendable to parallelization than others. 
-\subsection{Insertion sort}
-Insertion sort is the simplest sorting algorithm discussed here. 
-It works by iteratively building a sorted array one element at a time. 
-That is, the algorithm loops through the list, creating a sorted and unsorted part, and insterting each element it encounters at the correct location. 
-This proceduce is $O(n^2)$ worst case, but tends to perform quite well on small datasets, and better then other $O(n^2)$ sorts, such as bubble sort. \cite{knuth_art_nodate} 
-For this reason, inserstion sort is often used as a subroutine in hybrid sorts like Timsort, where it is called when the size of a subarray is smaller then some threshold. \cite{auger_et_al:LIPIcs:2018:9467} 
-Insertion sort can be parallelized % TODO in what way @Albert
+Additionally, each algorithm is constructed differently, and some are more amendable to parallelization than others.
+
+The following three subsections discuss the design and parallelization of Mergesort, Quicksort, and Heapsort.
+
 \subsection{Mergesort}
-Mergesort is a divide and conquer sort that recursively divides an array into subarrays, and merges them together such that each subarray is sorted. 
-This procedure can be seen in Figure \ref{mrg}.  
-The recursive invariant is that each returned subarray is sorted, which can be proved by induction, as an array of length 1 is already sorted by definition. \cite{cormen_introduction_2009} 
+Mergesort is a divide-and-conquer sorting algorithm that recursively divides an array into subarrays and merges them together in such a way that the original array is sorted. 
+The operation of this procedure on an array of eight elements is depicted in Figure \ref{mrg}.  
 \begin{figure}[h]
 	\includegraphics[width=6cm]{merge.png} 
 	\caption{Mergesort diagram from \cite{cormen_introduction_2009}}
 	\label{mrg}
 \end{figure}
 Mergesort has a time complexity of $O(nlog(n))$ in both the average and worst case, although constant factors can make it worse than Quicksort in practice. 
-Mergesort is a natural candidate for parallelization; the divide and conquer nature of the algorithm is already suitable for this process. 
+Given the divide-and-conquer paradigm that Mergesort uses, it is a natural candidate for parallelization. Mergesort follows this paradigm as follows: First the input array (of size $n$) is recursively divided in two until there are $n$ single-element subarrays (divide). Each single-element array is trivially sorted (conquer). From there, the sorted subarrays are merged together, resulting in a single array that is equivalent to the input array but in sorted order (combine). Given the mechanics of the algorithm, there are two primary ways to parallelize Mergesort: (1) Parallelize the divide stage (i.e., the two recursive calls to the Mergesort procedure) and (2) Parallelize the combine stage (i.e., the Merge procedure). It is possible to implement either (1), (2), or both. According to \cite{cormen_introduction_2009}, only parallelizing the recursive calls to Mergesort will result in diminishing returns on performance as the number of processors grows to more than a few dozen. In order to efficiently scale up to hundreds of processors, parallelizing the Merge procedure is necessary because it becomes the performance bottleneck.
+Our implementation of parallelized Mergesort parallelizes the recursive calls to Mergesort while implementing a serial Merge procedure. There are a couple of reasons for this design decision. First, the HPC architecture we are using (the Case Western Reserve Markov cluster) has well under one hundred CPU cores per node. Thus, parallel Mergesort with only the divide stage parallelized theoretically scales well within this core-count range. Second, parallelizing the Merge procedure proved to be difficult with OpenMP due to a lack of low-level control over threads.
+
 % TODO @Colin add detail on your implementation
 
 \subsection{Heapsort}
