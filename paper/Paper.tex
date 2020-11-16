@@ -118,8 +118,8 @@
         \label{qck}
     \end{figure}
     In particular, Quicksort is perhaps the most parallelizable sorting algorithm, and can achieve a linear speedup with few modifications. \cite{blelloch_programming_1996}
-    This is because each subarray can be sorted independently, and this leads to speedup. 
-    % TODO @Jason add detail on your implementation
+    This is because each subarray can be sorted independently, and this leads to speedup.
+    The fundamental steps of quicksort is to partition the array around a selected “pivot” point to produce two subarrays. These subarrays are then recursively sorted until the entire array of elements are in the correct order. Intuitively, one can see how to parallelize based on this fundamental divide-and-conquer algorithm. In OpenMP, the “task” directive can tell OpenMP to dedicate a thread to a specific block of code labeled by the task. In this case, when the two subarrays are selected, each recursive call to the quicksort method gets a dedicated OpenMP task initiated to create a parallel region of threads to be called later. This increases efficiency incredibly when allocating more and more OpenMP threads and correlating core count for quicksort to use. Our graphical analysis below indicates this speedup, along with the dependence on an increasing number of elements to sort.
     \section{Methodology}
 	For our project, we used...
     For our project, we implemented our sorting algorithms in the C programming language. OpenMP \cite{openmp08} is used for achieving parallelization for our implementations of parallelized Mergesort and Quicksort.
