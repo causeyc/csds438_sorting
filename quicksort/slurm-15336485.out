@@ -1,0 +1,126 @@
+----------------------------
+Number of OpenMP threads: 1
+Number of elements: 10000
+Sorting time: 0.001933 seconds
+----------------------------
+Number of OpenMP threads: 1
+Number of elements: 100000
+Sorting time: 0.019777 seconds
+----------------------------
+Number of OpenMP threads: 1
+Number of elements: 1000000
+Sorting time: 0.226582 seconds
+----------------------------
+Number of OpenMP threads: 1
+Number of elements: 10000000
+Sorting time: 2.552702 seconds
+----------------------------
+Number of OpenMP threads: 1
+Number of elements: 100000000
+Sorting time: 28.771116 seconds
+----------------------------
+Number of OpenMP threads: 1
+Number of elements: 1000000000
+Sorting time: 328.445742 seconds
+----------------------------
+----------------------------
+Number of OpenMP threads: 2
+Number of elements: 10000
+Sorting time: 0.003228 seconds
+----------------------------
+Number of OpenMP threads: 2
+Number of elements: 100000
+Sorting time: 0.012946 seconds
+----------------------------
+Number of OpenMP threads: 2
+Number of elements: 1000000
+Sorting time: 0.120581 seconds
+----------------------------
+Number of OpenMP threads: 2
+Number of elements: 10000000
+Sorting time: 1.328230 seconds
+----------------------------
+Number of OpenMP threads: 2
+Number of elements: 100000000
+Sorting time: 14.764082 seconds
+----------------------------
+Number of OpenMP threads: 2
+Number of elements: 1000000000
+Sorting time: 177.697221 seconds
+----------------------------
+----------------------------
+Number of OpenMP threads: 4
+Number of elements: 10000
+Sorting time: 0.006417 seconds
+----------------------------
+Number of OpenMP threads: 4
+Number of elements: 100000
+Sorting time: 0.012198 seconds
+----------------------------
+Number of OpenMP threads: 4
+Number of elements: 1000000
+Sorting time: 0.076475 seconds
+----------------------------
+Number of OpenMP threads: 4
+Number of elements: 10000000
+Sorting time: 0.744599 seconds
+----------------------------
+Number of OpenMP threads: 4
+Number of elements: 100000000
+Sorting time: 8.118301 seconds
+----------------------------
+Number of OpenMP threads: 4
+Number of elements: 1000000000
+Sorting time: 100.220353 seconds
+----------------------------
+----------------------------
+Number of OpenMP threads: 8
+Number of elements: 10000
+Sorting time: 0.018971 seconds
+----------------------------
+Number of OpenMP threads: 8
+Number of elements: 100000
+Sorting time: 0.031605 seconds
+----------------------------
+Number of OpenMP threads: 8
+Number of elements: 1000000
+Sorting time: 0.094632 seconds
+----------------------------
+Number of OpenMP threads: 8
+Number of elements: 10000000
+Sorting time: 0.650378 seconds
+----------------------------
+Number of OpenMP threads: 8
+Number of elements: 100000000
+Sorting time: 5.907049 seconds
+----------------------------
+Number of OpenMP threads: 8
+Number of elements: 1000000000
+Sorting time: 67.099214 seconds
+----------------------------
+----------------------------
+Number of OpenMP threads: 16
+Number of elements: 10000
+Sorting time: 0.044384 seconds
+----------------------------
+Number of OpenMP threads: 16
+Number of elements: 100000
+Sorting time: 0.081166 seconds
+----------------------------
+Number of OpenMP threads: 16
+Number of elements: 1000000
+Sorting time: 0.146923 seconds
+----------------------------
+Number of OpenMP threads: 16
+Number of elements: 10000000
+Sorting time: 0.799617 seconds
+----------------------------
+Number of OpenMP threads: 16
+Number of elements: 100000000
+Sorting time: 6.100481 seconds
+----------------------------
+Number of OpenMP threads: 16
+Number of elements: 1000000000
+Sorting time: 59.716823 seconds
+----------------------------
+----------------------------
