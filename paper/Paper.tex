@@ -142,27 +142,11 @@
     
     \section{Results}
     In this section, the results of each algorithm will be shown. 
-    The main variable of interest is how much time each algorithm takes as a function of the length of the input array $n$.
-
-    In particular, Quicksort is perhaps the most parallelizable sorting algorithm, and can achieve a linear speedup with few modifications. \cite{blelloch_programming_1996}
-    This is because each subarray can be sorted independently, and this leads to speedup. 
-    % TODO @Jason add detail on your implementation
-    \section{Methodology}
-    In this study, the OpenMP \cite{openmp08} API is used for parallization. 
-    It is an example of a fork-join methodology	, where each parallel thread forks off from a main thread, then, the results are joined back together. 
-    This is implemented into the C programming language via \textit{\#pragma} preprocessor directives. 
-    OpenMP is useful for obviously parallel cases, such as Mergesort and Quicksort, as the division of work is quite clear. 
-    % TODO add more OMP detail here.
-    
-    This work utilizes Case Western Reserve University's Markov cluster, which runs on Intel Xeon x86\_64 Processors. 
-    Using the Simple Linux Utility for Resource Management \cite{yoo_slurm_2003} (SLURM), resources are allocated in batch mode, which enables repeatable, large scale experiments with the requested resources. 
-    % TODO do we need more detail?
-    
-    \section{Results}
-    In this section, the results of each algorithm will be shown. 
     The main variable of interest is how much time each algorithm takes as a function of the length of the input array $n$. 
 
 
+    In particular, Quicksort is perhaps the most parallelizable sorting algorithm, and can achieve a linear speedup with few modifications. \cite{blelloch_programming_1996}
+    This is because each subarray can be sorted independently, and this leads to speedup. 
     %sections should always be mergesort -> quick -> heap -> (shell)
 
     We begin with an individual discussion of Quicksort. 
