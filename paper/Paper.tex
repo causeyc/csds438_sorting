@@ -238,5 +238,6 @@
     \bibliography{ref.bib}
     \bibliographystyle{ieeetran}
     \appendix
+	All of our code and data can be found in our GitHub repo \href{https://github.com/causeyc/csds438_sorting}{here}. Our implementation of parallel Mergesort is located in mergesort/merge$\_$sort$\_$OpenMP.c. The parallel Quicksort implementation is in quicksort/quicksortOMP.c. Our serial Heapsort implementation is located in heapsort/heapsort.c. In order to run the experiment, clone the repo into a location on Case Western's HPC Markov cluster. From there, run the SLURM batch scripts. The first is \textbf{sorting.slurm} and is located in mergesort/. This script runs parallel Mergesort on a compute node on all combinations of array sizes and CPU core numbers (as explained in the main part of the paper). Once finished, an output SLURM file will be produced that contains the execution times of sorts. \textit{Mutatis mutandis} for Quicksort (the batch script is called \textbf{qs-job.slurm} and is located in quicksort/).
     % TODO slap the code in here
 \end{document}
