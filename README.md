@@ -7,17 +7,19 @@ CSDS 438 HPC Final Project
 
 **STATUS:**  Working! 
 
-**RUNNING**  
+**RUNNING MERGESORT**  
 
 **CSV**  
+The CSV file was made by hand using the outputs of the SLURM script described above. We do not currently have a scripted way to produce a CSV file from MergeSort output.
 
 ### QuickSort:  
 
 **STATUS:**  Working!
 
-**RUNNING**  
+**RUNNING QUICKSORT**  
 
 **CSV**  
+The CSV file was made by hand using the outputs of the SLURM script described above. We do not currently have a scripted way to produce a CSV file from QuickSort output.
 
 ### HeapSort:  
 
